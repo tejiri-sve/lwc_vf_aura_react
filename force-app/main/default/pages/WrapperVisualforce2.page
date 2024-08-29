@@ -1,0 +1,38 @@
+<apex:page lightningStylesheets="true" controller="POV_Controller">
+  <apex:slds />
+    <apex:includeScript value="/lightning/lightning.out.js" />
+    <apex:includeLightning />
+    
+    <div id="AuraContainer" >【テキスト表示箇所:Visualforce(WrapperVisualforce2)】以下Visualforce内のAuraコンポーネント</div>
+
+    <script type="text/javascript">
+        $Lightning.use("c:WrapperLightningApp2", function() {
+          $Lightning.createComponent("c:lccSampleReact",
+            { 
+             },
+            "AuraContainer",
+            function(cmp) {
+              // do some stuff
+          });
+        });
+
+        // Obtaining LEX origin URL from Apex to fire to parent & match the source upon receiving message
+        var lexOrigin = '{!lexOrigin}';
+
+        /*************** EventListener to GET response from LWC ***************/
+        window.addEventListener("message", function (event) {
+            if (event.origin === lexOrigin) {
+                var receivedfromLWC = event.data;
+                var output = document.querySelector("#output");
+                output.innerHTML = receivedfromLWC;
+            }
+        });
+
+      /*************** Function to Fire PostMessage Event to parent LWC ***************/
+      function firetoLWC() {
+          var message = document.getElementById('vfMessage').value;
+          window.parent.postMessage(message, lexOrigin);
+      }
+
+    </script>
+</apex:page>
